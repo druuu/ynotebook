@@ -20,6 +20,7 @@ define([
      */
 
     var OutputArea = function (options) {
+        this.id = options.id;
         this.config = options.config;
         this.selector = options.selector;
         this.events = options.events;
@@ -55,7 +56,7 @@ define([
      **/
 
     OutputArea.prototype.create_elements = function () {
-        var element = this.element = $("<div/>");
+        var element = this.element = $(window.shared_elements[this.id]['output']);
         // wrap element in safe trigger,
         // so that errors (e.g. in widget extensions) are logged instead of
         // breaking everything.

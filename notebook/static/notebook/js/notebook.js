@@ -1262,7 +1262,7 @@ define([
      * @param {integer} [index] - a valid index where to insert cell
      * @return {Cell|null} created cell or null
      */
-    Notebook.prototype.insert_cell_at_index = function(type, index){
+    Notebook.prototype.insert_cell_at_index = function(type, index, id){
 
         var ncells = this.ncells();
         index = Math.min(index, ncells);
@@ -1287,6 +1287,7 @@ define([
 
         if (ncells === 0 || this.is_valid_cell_index(index) || index === ncells) {
             var cell_options = {
+                id: id,
                 events: this.events, 
                 config: this.config, 
                 keyboard_manager: this.keyboard_manager, 
@@ -2627,8 +2628,8 @@ define([
         var new_cell = null;
         for (i=0; i<ncells; i++) {
             cell_data = new_cells[i];
-            new_cell = this.insert_cell_at_index(cell_data.cell_type, i);
-            new_cell.fromJSON(cell_data);
+            new_cell = this.insert_cell_at_index(cell_data.cell_type, i, cell_data.metadata['id']);
+            //new_cell.fromJSON(cell_data);
             if (new_cell.cell_type === 'code' && !new_cell.output_area.trusted) {
                 trusted = false;
             }
@@ -3069,13 +3070,13 @@ define([
                 }
             });
         }
-        if (this.ncells() === 0) {
-            this.insert_cell_below('code');
-            this.edit_mode(0);
-        } else {
-            this.select(0);
-            this.handle_command_mode(this.get_cell(0));
-        }
+        //if (this.ncells() === 0) {
+        //    this.insert_cell_below('code');
+        //    this.edit_mode(0);
+        //} else {
+        //    this.select(0);
+        //    this.handle_command_mode(this.get_cell(0));
+        //}
         this.set_dirty(false);
         this.scroll_to_top();
         this.writable = data.writable || false;

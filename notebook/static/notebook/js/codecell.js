@@ -95,6 +95,7 @@ define([
          *          tooltip: Tooltip instance
          */
         this.kernel = kernel || null;
+        this.id = options.id;
         this.notebook = options.notebook;
         this.collapsed = false;
         this.events = options.events;
@@ -175,8 +176,10 @@ define([
             cell: this, 
             notebook: this.notebook});
         inner_cell.append(this.celltoolbar.element);
-        var input_area = $('<div/>').addClass('input_area');
-        this.code_mirror = new CodeMirror(input_area.get(0), this._options.cm_config);
+        //var input_area = $('<div/>').addClass('input_area');
+        var input_area = $(window.shared_elements[this.id]['input_area']);
+        //this.code_mirror = new CodeMirror(input_area.get(0), this._options.cm_config);
+        this.code_mirror = window.shared_elements[this.id]['codemirror'];
         // In case of bugs that put the keyboard manager into an inconsistent state,
         // ensure KM is enabled when CodeMirror is focused:
         this.code_mirror.on('focus', function () {
@@ -195,6 +198,7 @@ define([
         cell.append(input).append(output);
         this.element = cell;
         this.output_area = new outputarea.OutputArea({
+            id: this.id,
             config: this.config,
             selector: output,
             prompt_area: true,
