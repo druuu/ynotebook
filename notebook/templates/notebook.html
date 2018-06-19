@@ -134,7 +134,7 @@ data-notebook-path="{{notebook_path | urlencode}}"
                             <a href="#" >{% trans %}Close and Halt{% endtrans %}</a></li>
                     </ul>
                 </li>
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans %}Edit{% endtrans %}</a>
+                <li class="dropdown hidden"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans %}Edit{% endtrans %}</a>
                     <ul id="edit_menu" class="dropdown-menu">
                         <li id="cut_cell"><a href="#">{% trans %}Cut Cells{% endtrans %}</a></li>
                         <li id="copy_cell"><a href="#">{% trans %}Copy Cells{% endtrans %}</a></li>
@@ -198,7 +198,7 @@ data-notebook-path="{{notebook_path | urlencode}}"
                             <a href="#">{% trans %}Insert Markdown Below{% endtrans %}</a></li>
                     </ul>
                 </li>
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans %}Cell{% endtrans %}</a>
+                <li class="dropdown hidden"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans %}Cell{% endtrans %}</a>
                     <ul id="cell_menu" class="dropdown-menu">
                         <li id="run_cell" title="{% trans %}Run this cell, and move cursor to the next one{% endtrans %}">
                             <a href="#">{% trans %}Run Cells{% endtrans %}</a></li>

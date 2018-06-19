@@ -44,16 +44,8 @@ define([
             ],
             'insert_markdown_below'],
           [
-            ['jupyter-notebook:cut-cell',
-             'jupyter-notebook:copy-cell',
-             'jupyter-notebook:paste-cell-below'
-            ] ,
+            ['jupyter-notebook:cut-cell'],
             'cut_copy_paste'],
-          [
-            ['jupyter-notebook:move-cell-up',
-             'jupyter-notebook:move-cell-down'
-            ],
-            'move_up_down'],
           [ [new toolbar.Button('jupyter-notebook:run-cell-and-select-next',
                 {label: i18n.msg._('Run')}),
              'jupyter-notebook:interrupt-kernel',
