@@ -49,6 +49,7 @@ define([
          *          notebook: Notebook instance
          */
         options = options || {};
+        this.id = options.id;
 
         // in all TextCell/Cell subclasses
         // do not assign most of members here, just pass it down
@@ -88,7 +89,7 @@ define([
         Cell.prototype.create_element.apply(this, arguments);
         var that = this;
 
-        var cell = $("<div>").addClass('cell text_cell');
+        var cell = $("<div>").addClass('cell text_cell hidden');
         cell.attr('tabindex','2');
 
         var prompt = $('<div/>').addClass('prompt input_prompt');
@@ -98,8 +99,8 @@ define([
             cell: this, 
             notebook: this.notebook});
         inner_cell.append(this.celltoolbar.element);
-        var input_area = $('<div/>').addClass('input_area');
-        this.code_mirror = new CodeMirror(input_area.get(0), this._options.cm_config);
+        var input_area = $(window.shared_elements[this.id]['input_area']);
+        this.code_mirror = window.shared_elements[this.id]['codemirror'];
         // In case of bugs that put the keyboard manager into an inconsistent state,
         // ensure KM is enabled when CodeMirror is focused:
         this.code_mirror.on('focus', function () {

@@ -39,6 +39,10 @@ define([
           [
             ['jupyter-notebook:insert-cell-below'],
             'insert_above_below'],
+          [ [new toolbar.Button('jupyter-notebook:insert-markdown-below',
+                {label: i18n.msg._('MD')}),
+            ],
+            'insert_markdown_below'],
           [
             ['jupyter-notebook:cut-cell',
              'jupyter-notebook:copy-cell',

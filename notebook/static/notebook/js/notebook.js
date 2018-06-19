@@ -1143,70 +1143,11 @@ define([
         if (indices === undefined) {
             indices = this.get_selected_cells_indices();
         }
-
-        var undelete_backup = {
-            cells: [],
-            below: false,
-            index: 0,
-        };
-
-        var cursor_ix_before = this.get_selected_index();
-        var deleting_before_cursor = 0;
         for (var i=0; i < indices.length; i++) {
-            if (!this.get_cell(indices[i]).is_deletable()) {
-                // If any cell is marked undeletable, cancel
-                return this;
-            }
-
-            if (indices[i] < cursor_ix_before) {
-                deleting_before_cursor++;
-            }
-        }
-
-        // If we started deleting cells from the top, the later indices would
-        // get offset. We sort them into descending order to avoid that.
-        indices.sort(function(a, b) {return b-a;});
-        for (i=0; i < indices.length; i++) {
             var cell = this.get_cell(indices[i]);
-            undelete_backup.cells.push(cell.toJSON());
-            this.get_cell_element(indices[i]).remove();
-            this.events.trigger('delete.Cell', {'cell': cell, 'index': indices[i]});
+            var id = cell.metadata.id;
+            ymap.set(id, {'index': indices[i], 'active': false});
         }
-
-        var new_ncells = this.ncells();
-        // Always make sure we have at least one cell.
-        if (new_ncells === 0) {
-            this.insert_cell_below('code');
-            new_ncells = 1;
-        }
-
-        var cursor_ix_after = this.get_selected_index();
-        if (cursor_ix_after === null) {
-            // Selected cell was deleted
-            cursor_ix_after = cursor_ix_before - deleting_before_cursor;
-            if (cursor_ix_after >= new_ncells) {
-                cursor_ix_after = new_ncells - 1;
-                undelete_backup.below = true;
-            }
-            this.select(cursor_ix_after);
-        }
-
-        // Check if the cells were after the cursor
-        for (i=0; i < indices.length; i++) {
-            if (indices[i] > cursor_ix_before) {
-                undelete_backup.below = true;
-            }
-        }
-
-        // This will put all the deleted cells back in one location, rather than
-        // where they came from. It will do until we have proper undo support.
-        undelete_backup.index = cursor_ix_after;
-        $('#undelete_cell').removeClass('disabled');
-
-        this.undelete_backup_stack.push(undelete_backup);
-        this.set_dirty(true);
-
-        return this;
     };
 
     /**
@@ -1373,7 +1314,14 @@ define([
         if (index === null || index === undefined) {
             index = Math.min(this.get_selected_index(index), this.get_anchor_index());
         }
-        return this.insert_cell_at_index(type, index);
+        var type = type || 'code';
+        var id = get_inactive_cell(type).metadata.id;
+        if (id) {
+            ymap.set(id, {'index': index, 'active': true});
+        } else {
+            console.log('limit reached!!');
+        }
+        //return this.insert_cell_at_index(type, index);
     };
 
     /**
@@ -1388,7 +1336,14 @@ define([
         if (index === null || index === undefined) {            
             index = Math.max(this.get_selected_index(index), this.get_anchor_index());
         }
-        return this.insert_cell_at_index(type, index+1);
+        var type = type || 'code';
+        var id = get_inactive_cell(type).metadata.id;
+        if (id) {
+            ymap.set(id, {'index': index+1, 'active': true});
+        } else {
+            console.log('limit reached!!');
+        }
+        //return this.insert_cell_at_index(type, index+1);
     };
 
 

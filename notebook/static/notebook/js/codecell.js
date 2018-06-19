@@ -156,7 +156,7 @@ define([
         Cell.prototype.create_element.apply(this, arguments);
         var that = this;
 
-        var cell =  $('<div></div>').addClass('cell code_cell');
+        var cell =  $('<div></div>').addClass('cell code_cell hidden');
         cell.attr('tabindex','2');
 
         var input = $('<div></div>').addClass('input');
