@@ -14,5 +14,5 @@ function set_heartbeat2(url) {
 
 var url = new URL(window.location.href);
 var id = url.searchParams.get("id");
-var url = 'https://finplane.com/heartbeat/?id=' + id;
+var url = '/heartbeat/?id=' + id;
 set_heartbeat2(url);
