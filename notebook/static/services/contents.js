@@ -102,6 +102,24 @@ define(function(requirejs) {
         return utils.promising_ajax(url + '?' + $.param(params), settings);
     };
 
+    Contents.prototype.remote_get = function (path, options) {
+        /**
+         * We do the call with settings so we can set cache to false.
+         */
+        var settings = {
+            processData : false,
+            cache : false,
+            type : "GET",
+            dataType : "json",
+        };
+        //var url = this.api_url(path);
+        var url = '/api/contents/remote?url=' + options.url;
+        var params = {};
+        if (options.type) { params.type = options.type; }
+        if (options.format) { params.format = options.format; }
+        if (options.content === false) { params.content = '0'; }
+        return utils.promising_ajax(url + '?' + $.param(params), settings);
+    };
 
     /**
      * Creates a new untitled file or directory in the specified directory path.

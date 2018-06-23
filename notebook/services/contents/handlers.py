@@ -308,6 +308,16 @@ class TrustNotebooksHandler(IPythonHandler):
         yield gen.maybe_future(cm.trust_notebook(path))
         self.set_status(201)
         self.finish()
+
+
+class RemoteContentsHandler(ContentsHandler):
+    @web.authenticated
+    @gen.coroutine
+    def get(self):
+        url = self.get_query_argument('url')
+        model = yield gen.maybe_future(self.contents_manager.remote_get(url))
+        validate_model(model, expect_content=True)
+        self._finish_model(model, location=False)
 #-----------------------------------------------------------------------------
 # URL to handler mappings
 #-----------------------------------------------------------------------------
@@ -320,6 +330,7 @@ default_handlers = [
     (r"/api/contents%s/checkpoints/%s" % (path_regex, _checkpoint_id_regex),
         ModifyCheckpointsHandler),
     (r"/api/contents%s/trust" % path_regex, TrustNotebooksHandler),
+    (r"/api/contents/remote", RemoteContentsHandler),
     (r"/api/contents%s" % path_regex, ContentsHandler),
     (r"/api/notebooks/?(.*)", NotebooksRedirectHandler),
 ]
