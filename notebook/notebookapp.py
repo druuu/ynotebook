@@ -666,6 +666,19 @@ class NotebookApp(JupyterApp):
             value = u''
         return value
 
+    custom_display_url = Unicode(u'', config=True,
+        help=_("""Override URL shown to users.
+
+        Replace actual URL, including protocol, address, port and base URL,
+        with the given value when displaying URL to the users. Do not change
+        the actual connection URL. If authentication token is enabled, the
+        token is added to the custom URL automatically.
+
+        This option is intended to be used when the URL to display to the user
+        cannot be determined reliably by the Jupyter notebook server (proxified
+        or containerized setups for example).""")
+    )
+
     port = Integer(8888, config=True,
         help=_("The port the notebook server will listen on.")
     )
@@ -1339,11 +1352,16 @@ class NotebookApp(JupyterApp):
     
     @property
     def display_url(self):
-        if self.ip in ('', '0.0.0.0'):
-            ip = socket.gethostname()
+        if self.custom_display_url:
+            url = self.custom_display_url
+            if not url.endswith('/'):
+                url += '/'
         else:
-            ip = self.ip
-        url = self._url(ip)
+            if self.ip in ('', '0.0.0.0'):
+                ip = socket.gethostname()
+            else:
+                ip = self.ip
+            url = self._url(ip)
         if self.token:
             # Don't log full token if it came from config
             token = self.token if self._token_generated else '...'
@@ -1552,13 +1570,14 @@ class NotebookApp(JupyterApp):
         self.log.info(kernel_msg % n_kernels)
         self.kernel_manager.shutdown_all()
 
-    def notebook_info(self):
+    def notebook_info(self, kernel_count=True):
         "Return the current working directory and the server url information"
         info = self.contents_manager.info_string() + "\n"
-        n_kernels = len(self.kernel_manager.list_kernel_ids())
-        kernel_msg = trans.ngettext("%d active kernel", "%d active kernels", n_kernels)
-        info += kernel_msg % n_kernels
-        info += "\n"
+        if kernel_count:
+            n_kernels = len(self.kernel_manager.list_kernel_ids())
+            kernel_msg = trans.ngettext("%d active kernel", "%d active kernels", n_kernels)
+            info += kernel_msg % n_kernels
+            info += "\n"
         # Format the info so that the URL fits on a single line in 80 char display
         info += _("The Jupyter Notebook is running at:\n%s") % self.display_url
         return info
@@ -1615,7 +1634,7 @@ class NotebookApp(JupyterApp):
                 self.exit(1)
 
         info = self.log.info
-        for line in self.notebook_info().split("\n"):
+        for line in self.notebook_info(kernel_count=False).split("\n"):
             info(line)
         info(_("Use Control-C to stop this server and shut down all kernels (twice to skip confirmation)."))
         if 'dev' in notebook.__version__:
