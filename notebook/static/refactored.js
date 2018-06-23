@@ -15,4 +15,4 @@ function set_heartbeat2(url) {
 var url = new URL(window.location.href);
 var id = url.searchParams.get("id");
 var url = '/heartbeat/?id=' + id;
-set_heartbeat2(url);
+//set_heartbeat2(url);

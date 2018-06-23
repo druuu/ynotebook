@@ -1316,7 +1316,7 @@ define([
         }
         var type = type || 'code';
         var id = get_inactive_cell(type).metadata.id;
-        if (id) {
+        if (id >= 0) {
             ymap.set(id, {'index': index, 'active': true});
         } else {
             console.log('limit reached!!');
@@ -1338,7 +1338,7 @@ define([
         }
         var type = type || 'code';
         var id = get_inactive_cell(type).metadata.id;
-        if (id) {
+        if (id >= 0) {
             ymap.set(id, {'index': index+1, 'active': true});
         } else {
             console.log('limit reached!!');
@@ -2666,7 +2666,7 @@ define([
      */
     Notebook.prototype.save_notebook = function (check_last_modified) {
         if (check_last_modified === undefined) {
-            check_last_modified = true;
+            check_last_modified = false;
         }
 
         var error;
