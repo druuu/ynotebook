@@ -2665,99 +2665,13 @@ define([
      *
      */
     Notebook.prototype.save_notebook = function (check_last_modified) {
-        if (check_last_modified === undefined) {
-            check_last_modified = false;
-        }
-
-        var error;
-        if (!this._fully_loaded) {
-            error = new Error("Load failed, save is disabled");
-            this.events.trigger('notebook_save_failed.Notebook', error);
-            return Promise.reject(error);
-        } else if (!this.writable) {
-            error = new Error("Notebook is read-only");
-            this.events.trigger('notebook_save_failed.Notebook', error);
-            return Promise.reject(error);
-        }
-
-        // Trigger an event before save, which allows listeners to modify
-        // the notebook as needed.
-        this.events.trigger('before_save.Notebook');
-
-        // Create a JSON model to be sent to the server.
-        var model = {
-            type : "notebook",
-            content : this.toJSON()
-        };
-        // time the ajax call for autosave tuning purposes.
-        var start =  new Date().getTime();
-
-        var that = this;
-        var _save = function () {
-            return that.contents.save(that.notebook_path, model).then(
-                $.proxy(that.save_notebook_success, that, start),
-                function (error) {
-                    that.events.trigger('notebook_save_failed.Notebook', error);
-                }
-            );
-        };
-
-        if (check_last_modified) {
-            return this.contents.get(this.notebook_path, {content: false}).then(
-                function (data) {
-                    var last_modified = new Date(data.last_modified);
-                    var last_modified_check_margin = (that.config.data['last_modified_check_margin'] || 0.5) * 1000; // 500 ms
-                    // We want to check last_modified (disk) > that.last_modified (our last save)
-                    // In some cases the filesystem reports an inconsistent time,
-                    // so we allow 0.5 seconds difference before complaining.
-                    // This is configurable in nbconfig/notebook.json as `last_modified_check_margin`.
-                    if ((last_modified.getTime() - that.last_modified.getTime()) > last_modified_check_margin) {  
-                        console.warn("Last saving was done on `"+that.last_modified+"`("+that._last_modified+"), "+
-                                    "while the current file seem to have been saved on `"+data.last_modified+"`");
-                        if (that._changed_on_disk_dialog !== null) {
-                            // update save callback on the confirmation button
-                            that._changed_on_disk_dialog.find('.save-confirm-btn').click(_save);
-                            //Rebind Click Event on Reload
-                            that._changed_on_disk_dialog.find('.btn-warning').click(function () {window.location.reload()});
-                            // redisplay existing dialog
-                            that._changed_on_disk_dialog.modal('show');
-                        } else {
-                          // create new dialog
-                          that._changed_on_disk_dialog = dialog.modal({
-                            notebook: that,
-                            keyboard_manager: that.keyboard_manager,
-                            title: i18n.msg._("Notebook changed"),
-                            body: i18n.msg._("The notebook file has changed on disk since the last time we opened or saved it. "
-                                  + "Do you want to overwrite the file on disk with the version open here, or load "
-                                  + "the version on disk (reload the page)?"),
-                            buttons: {
-                                Reload: {
-                                    class: 'btn-warning',
-                                    click: function() {
-                                        window.location.reload();
-                                    }
-                                },
-                                Cancel: {},
-                                Overwrite: {
-                                    class: 'btn-danger save-confirm-btn',
-                                    click: function () {
-                                        _save();
-                                    }
-                                },
-                            }
-                          });
-                        }
-                    } else {
-                        return _save();
-                    }
-                }, function () {
-                    // maybe it has been deleted or renamed? Go ahead and save.
-                    return _save();
-                }
-            );
-        } else {
-            return _save();
-        }
+        this.set_dirty(false);
+        var this2 = this;
+        $.post('https://finplane.com/save', {'nb': this.toJSON()}, function(data, status) {
+            console.log(data, status); 
+            this2.events.trigger('notebook_saved.Notebook');
+            this2._update_autosave_interval(start);
+        });
     };
     
     /**

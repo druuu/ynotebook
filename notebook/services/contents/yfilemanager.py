@@ -34,3 +34,6 @@ class YFileManager(LargeFileManager):
         path = 'template.ipynb'
         model = self._remote_notebook_model(url, path)
         return model
+
+    #def _save_notebook(self, os_path, nb):
+    #    Path(os_path).touch(exist_ok=True)
