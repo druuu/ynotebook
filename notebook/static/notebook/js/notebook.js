@@ -2667,13 +2667,26 @@ define([
     Notebook.prototype.save_notebook = function (check_last_modified) {
         this.set_dirty(false);
         var this2 = this;
-        $.post('https://finplane.com/save', {'nb': this.toJSON()}, function(data, status) {
-            console.log(data, status); 
-            this2.events.trigger('notebook_saved.Notebook');
-            this2._update_autosave_interval(start);
+        var nb_url = new URL(window.location.href);
+        nb_url = nb_url.searchParams.get('url');
+        $.ajax({
+            url: 'https://finplane.com/save',
+            type: 'POST',
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            data:{
+                'nb': JSON.stringify(this2.toJSON()),
+                'nb_url': nb_url,
+                'port': window.location.port
+            },
+            success: function(response) {
+                this2.events.trigger('notebook_saved.Notebook');
+                //this2._update_autosave_interval(start);
+            }
         });
-    };
-    
+    };    
     /**
      * Success callback for saving a notebook.
      * 

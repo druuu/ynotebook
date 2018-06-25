@@ -50,6 +50,13 @@ define(function(requirejs) {
         return utils.url_path_join.apply(null, url_parts);
     };
 
+    Contents.prototype.remote_api_url = function() {
+        var url_parts = [
+            this.base_url, 'api/contents/remote'
+        ];
+        return utils.url_path_join.apply(null, url_parts);
+    };
+
     /**
      * Creates a basic error handler that wraps a jqXHR error as an Error.
      *
@@ -112,8 +119,7 @@ define(function(requirejs) {
             type : "GET",
             dataType : "json",
         };
-        //var url = this.api_url(path);
-        var url = '/api/contents/remote?url=' + options.url;
+        var url = this.remote_api_url(path) + '?url=' + options.url;
         var params = {};
         if (options.type) { params.type = options.type; }
         if (options.format) { params.format = options.format; }
