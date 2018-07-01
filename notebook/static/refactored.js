@@ -7,11 +7,7 @@ function set_heartbeat2() {
             xhr.send();
         }, 10*1000, xhr, url);
     }
-    var base_url = document.head.getAttribute('data-base_url');
-    var url = 'https://finplane.com/heartbeat?base_url=' 
-        + base_url.replace(/\//g, '')
-        + '&port=' + window.location.port
-        + '&share_url=' + encodeURIComponent(window.location.href);
+    var url = '/heartbeat' 
     var xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
     xhr.onreadystatechange = function() {

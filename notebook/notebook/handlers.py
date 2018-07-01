@@ -5,6 +5,7 @@
 
 from collections import namedtuple
 import os
+from pathlib import Path
 from tornado import web
 HTTPError = web.HTTPError
 
@@ -61,6 +62,11 @@ class NotebookHandler(IPythonHandler):
         )
 
 
+class HeartBeatHandler(IPythonHandler):
+    @web.authenticated
+    def get(self):
+        Path('/opt/heartbeat').touch()
+        self.write('ok')
 #-----------------------------------------------------------------------------
 # URL to handler mappings
 #-----------------------------------------------------------------------------
@@ -68,5 +74,6 @@ class NotebookHandler(IPythonHandler):
 
 default_handlers = [
     (r"/notebooks%s" % path_regex, NotebookHandler),
+    (r"/heartbeat", HeartBeatHandler),
 ]
 
