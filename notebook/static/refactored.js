@@ -7,7 +7,8 @@ function set_heartbeat2() {
             xhr.send();
         }, 10*1000, xhr, url);
     }
-    var url = '/heartbeat' 
+    
+    url = '/' + window.location.pathname.split('/')[1] + '/notebooks/heartbeat' 
     var xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
     xhr.onreadystatechange = function() {

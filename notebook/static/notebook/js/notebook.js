@@ -1145,8 +1145,8 @@ define([
         }
         for (var i=0; i < indices.length; i++) {
             var cell = this.get_cell(indices[i]);
-            var id = cell.metadata.id;
-            ymap.set(id, {'index': indices[i], 'active': false});
+            var id = cell.element.find('.input_area').data('id');
+            ymap.set(id, {'index': indices[i], 'active': 'no'});
         }
     };
 
@@ -1315,9 +1315,9 @@ define([
             index = Math.min(this.get_selected_index(index), this.get_anchor_index());
         }
         var type = type || 'code';
-        var id = get_inactive_cell(type).metadata.id;
+        var id = get_inactive_cell(type).element.find('.input_area').data('id');
         if (id >= 0) {
-            ymap.set(id, {'index': index, 'active': true});
+            ymap.set(id, {'index': index, 'active': 'yes'});
         } else {
             console.log('limit reached!!');
         }
@@ -1337,9 +1337,9 @@ define([
             index = Math.max(this.get_selected_index(index), this.get_anchor_index());
         }
         var type = type || 'code';
-        var id = get_inactive_cell(type).metadata.id;
+        var id = get_inactive_cell(type).element.find('.input_area').data('id');
         if (id >= 0) {
-            ymap.set(id, {'index': index+1, 'active': true});
+            ymap.set(id, {'index': index+1, 'active': 'yes'});
         } else {
             console.log('limit reached!!');
         }

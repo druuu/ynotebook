@@ -73,7 +73,7 @@ class HeartBeatHandler(IPythonHandler):
 
 
 default_handlers = [
+    (r"/notebooks/heartbeat", HeartBeatHandler),
     (r"/notebooks%s" % path_regex, NotebookHandler),
-    (r"/heartbeat", HeartBeatHandler),
 ]
 

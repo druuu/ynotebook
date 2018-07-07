@@ -53,8 +53,7 @@ define([
              'jupyter-notebook:confirm-restart-kernel-and-run-all-cells'
             ],
             'run_int'],
-         ['<add_celltype_list>'],
-         [['jupyter-notebook:show-command-palette']]
+         ['<add_celltype_list>']
         ];
         this.construct(grps);
     };
@@ -69,7 +68,7 @@ define([
         var multiselect = $('<option/>').attr('value','multiselect').attr('disabled','').text('-');
         var sel = $('<select/>')
             .attr('id','cell_type')
-            .addClass('form-control select-xs')
+            .addClass('form-control select-xs hidden')
             .append($('<option/>').attr('value','code').text(i18n.msg._('Code')))
             .append($('<option/>').attr('value','markdown').text(i18n.msg._('Markdown')))
             .append($('<option/>').attr('value','raw').text(i18n.msg._('Raw NBConvert')))
