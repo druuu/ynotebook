@@ -119,12 +119,12 @@ define(function(requirejs) {
             type : "GET",
             dataType : "json",
         };
-        var url = this.remote_api_url(path) + '?url=' + options.url;
+        var url = this.remote_api_url(path) + '?url=' + encodeURIComponent(options.url);
         var params = {};
         if (options.type) { params.type = options.type; }
         if (options.format) { params.format = options.format; }
         if (options.content === false) { params.content = '0'; }
-        return utils.promising_ajax(url + '?' + $.param(params), settings);
+        return utils.promising_ajax(url + '&' + $.param(params), settings);
     };
 
     /**
